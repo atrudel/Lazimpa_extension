@@ -7,3 +7,4 @@ dataclasses
 rich
 scikit-learn
 wandb
+submitit
