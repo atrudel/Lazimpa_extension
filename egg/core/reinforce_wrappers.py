@@ -14,7 +14,7 @@ import numpy as np
 
 from .transformer import TransformerEncoder, TransformerDecoder
 from .rnn import RnnEncoder, RnnEncoderImpatient
-from .util import find_lengths
+from .util import find_lengths, DEVICE
 
 
 class ReinforceWrapper(nn.Module):
@@ -223,9 +223,9 @@ class RnnSenderReinforce(nn.Module):
             step_logits = F.log_softmax(self.hidden_to_output(h_t), dim=1)
             # ATTENTION ENLEVER LAJOUT
             #if step==0:
-            #    step_logits = F.log_softmax(self.hidden_to_output(h_t), dim=1)-1000*torch.cat((torch.zeros((h_t.size(0),1)),torch.ones((h_t.size(0),int(self.vocab_size/2))),torch.zeros((h_t.size(0),int(self.vocab_size/2)))),dim=1).to("cuda")
+            #    step_logits = F.log_softmax(self.hidden_to_output(h_t), dim=1)-1000*torch.cat((torch.zeros((h_t.size(0),1)),torch.ones((h_t.size(0),int(self.vocab_size/2))),torch.zeros((h_t.size(0),int(self.vocab_size/2)))),dim=1).to(DEVICE)
             #else:
-            #    step_logits = F.log_softmax(self.hidden_to_output(h_t), dim=1)-1000*torch.cat((torch.zeros((h_t.size(0),1)),torch.zeros((h_t.size(0),int(self.vocab_size/2))),torch.ones((h_t.size(0),int(self.vocab_size/2)))),dim=1).to("cuda")
+            #    step_logits = F.log_softmax(self.hidden_to_output(h_t), dim=1)-1000*torch.cat((torch.zeros((h_t.size(0),1)),torch.zeros((h_t.size(0),int(self.vocab_size/2))),torch.ones((h_t.size(0),int(self.vocab_size/2)))),dim=1).to(DEVICE)
             distr = Categorical(logits=step_logits)
             entropy.append(distr.entropy())
 
@@ -464,7 +464,7 @@ class RnnReceiverImpatientCompositionality(nn.Module):
 #
 #        self.max_len = max_len
 #
-#        self.hidden_to_output = [nn.Linear(hidden_size, n_features).to("cuda")]*self.max_len
+#        self.hidden_to_output = [nn.Linear(hidden_size, n_features).to(DEVICE)]*self.max_len
 #        self.embedding = nn.Embedding(vocab_size, embed_dim)
 #        self.sos_embedding = nn.Parameter(torch.zeros(embed_dim))
 #        self.embed_dim = embed_dim
@@ -489,7 +489,7 @@ class RnnReceiverImpatientCompositionality(nn.Module):
 #        nn.init.normal_(self.sos_embedding, 0.0, 0.01)
 #
 #    def forward(self, message, input, message_lengths=0):
-#        from_sym_to_onehot=torch.eye(self.vocab_size,self.vocab_size).to("cuda")
+#        from_sym_to_onehot=torch.eye(self.vocab_size,self.vocab_size).to(DEVICE)
 #        prev_hidden = [self.agent(from_sym_to_onehot[message[:,0]],input)]
 #        prev_hidden.extend([torch.zeros_like(prev_hidden[0]) for _ in range(self.num_layers - 1)])
 
@@ -846,8 +846,8 @@ class CompositionalitySenderReceiverRnnReinforce(nn.Module):
 
         # Noisy channel
         noise_level=0.
-        noise_map=torch.from_numpy(1*(np.random.rand(message.size(0),message.size(1))<noise_level)).to("cuda")
-        noise=torch.from_numpy(np.random.randint(1,self.sender.vocab_size,size=(message.size(0),message.size(1)))).to("cuda") # random symbols
+        noise_map=torch.from_numpy(1*(np.random.rand(message.size(0),message.size(1))<noise_level)).to(DEVICE)
+        noise=torch.from_numpy(np.random.randint(1,self.sender.vocab_size,size=(message.size(0),message.size(1)))).to(DEVICE) # random symbols
 
         message_noise=message*(1-noise_map) + noise_map* noise
 

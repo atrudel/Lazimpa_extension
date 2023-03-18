@@ -119,11 +119,8 @@ class RnnEncoderImpatient(nn.Module):
         seq_hidden = nn.utils.rnn.pad_packed_sequence(packed_seq_hidden)
 
 
-
         if isinstance(self.cell, nn.LSTM):
             rnn_hidden, _ = rnn_hidden
             seq_hidden, _ = seq_hidden
-
-
 
         return seq_hidden

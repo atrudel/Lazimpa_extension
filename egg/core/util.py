@@ -17,6 +17,7 @@ common_opts = None
 optimizer = None
 summary_writer = None
 
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 def _populate_cl_params(arg_parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
     arg_parser.add_argument('--random_seed', type=int, default=None,

@@ -14,7 +14,7 @@ from egg.zoo.channel.features import OneHotLoader, UniformLoader
 from egg.zoo.channel.archs import Sender, Receiver
 from egg.core.reinforce_wrappers import RnnReceiverImpatient
 from egg.core.reinforce_wrappers import SenderImpatientReceiverRnnReinforce
-from egg.core.util import dump_sender_receiver_impatient
+from egg.core.util import dump_sender_receiver_impatient, DEVICE
 
 
 def get_params(params):
@@ -111,18 +111,18 @@ def loss_impatient(sender_input, _message, message_length, _receiver_input, rece
     """
 
     # 1. len_mask selects only the symbols before EOS-token
-    to_onehot=torch.eye(_message.size(1)).to("cuda")
-    to_onehot=torch.cat((to_onehot,torch.zeros((1,_message.size(1))).to("cuda")),0)
-    len_mask=[]
+    to_onehot = torch.eye(_message.size(1)).to(DEVICE)
+    to_onehot = torch.cat((to_onehot, torch.zeros((1, _message.size(1))).to(DEVICE)), 0)
+    len_mask = []
     for i in range(message_length.size(0)):
-      len_mask.append(to_onehot[message_length[i]])
-    len_mask=torch.stack(len_mask,dim=0)
+        len_mask.append(to_onehot[message_length[i]])
+    len_mask = torch.stack(len_mask,dim=0)
 
-    len_mask=torch.cumsum(len_mask,dim=1)
-    len_mask=torch.ones(len_mask.size()).to("cuda").add_(-len_mask)
+    len_mask = torch.cumsum(len_mask, dim=1)
+    len_mask = torch.ones(len_mask.size()).to(DEVICE).add_(-len_mask)
 
     # 2. coef applies weights on each position. By default it is equal
-    coef=(1/message_length.to(float)).repeat(_message.size(1),1).transpose(1,0) # useless ?
+    coef = (1/message_length.to(float)).repeat(_message.size(1),1).transpose(1,0) # useless ?
     coef2=coef # useless ?
     len_mask.mul_((coef2)) # useless ?
     len_mask.mul_((1/len_mask.sum(1)).repeat((_message.size(1),1)).transpose(1,0))
@@ -132,8 +132,8 @@ def loss_impatient(sender_input, _message, message_length, _receiver_input, rece
 
 
     # 3. crible_acc gathers accuracy for each input/position, crible_loss gathers losses for each input/position
-    crible_acc=torch.zeros(size=_message.size()).to("cuda")
-    crible_loss=torch.zeros(size=_message.size()).to("cuda")
+    crible_acc=torch.zeros(size=_message.size()).to(DEVICE)
+    crible_loss=torch.zeros(size=_message.size()).to(DEVICE)
 
     for i in range(receiver_output.size(1)):
       crible_acc[:,i].add_((receiver_output[:,i,:].argmax(dim=1) == sender_input.argmax(dim=1)).detach().float())
