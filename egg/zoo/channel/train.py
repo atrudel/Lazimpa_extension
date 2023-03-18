@@ -381,7 +381,7 @@ def main(params):
         for x in messages:
             x = x.cpu().numpy()
             all_messages.append(x)
-        all_messages = np.asarray(all_messages)
+        all_messages = np.asarray(all_messages, dtype='object')
 
         if epoch%50==0:
             torch.save(sender.state_dict(), opts.dir_save+"/sender/sender_weights"+str(epoch)+".pth")
