@@ -7,7 +7,7 @@ from typing import Optional
 
 import torch
 import torch.nn as nn
-from .util import find_lengths
+from .util import find_lengths, DEVICE
 
 
 class RnnEncoder(nn.Module):
@@ -112,7 +112,7 @@ class RnnEncoderImpatient(nn.Module):
             lengths = find_lengths(message)
 
         packed = nn.utils.rnn.pack_padded_sequence(
-            emb, lengths, batch_first=True, enforce_sorted=False)
+            emb, lengths.to(DEVICE), batch_first=True, enforce_sorted=False)
 
         packed_seq_hidden, rnn_hidden = self.cell(packed)
 
