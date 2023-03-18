@@ -72,7 +72,7 @@ def get_params(params):
                         help="Early stopping threshold on accuracy (default: 0.9999)")
 
     # AJOUT
-    parser.add_argument('--dir_save', type=str, default="expe_1",
+    parser.add_argument('--dir_save', type=str, default="dir_save",
                         help="Directory in which we will save the information")
     parser.add_argument('--unigram_pen', type=float, default=0.0,
                         help="Add a penalty for redundancy")
