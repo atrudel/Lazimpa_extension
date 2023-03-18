@@ -1,3 +1,4 @@
 dir_save
 **/*.egg-info
 **/*.ipynb
+**/__pycache__
