@@ -3,3 +3,4 @@ dir_save
 **/*.ipynb
 **/__pycache__
 .idea
+analysis

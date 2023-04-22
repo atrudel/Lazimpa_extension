@@ -8,3 +8,5 @@ rich
 scikit-learn
 wandb
 submitit
+matplotlib
+jupyter
