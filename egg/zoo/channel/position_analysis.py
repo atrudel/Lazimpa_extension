@@ -255,7 +255,7 @@ def main(params):
               position_sieve[i,j]=-1
 
 
-    np.save("analysis/position_sieve.npy",position_sieve)
+    np.save(opts.save_dir+"/position_sieve.npy",position_sieve)
 
     core.close()
 
