@@ -291,7 +291,7 @@ def main(params):
       for j in range(all_messages[i].shape[0]):
         messages[i,j]=all_messages[i][j]
 
-    np.save(opts.save_dir+"messages_analysis.npy",messages)
+    np.save(opts.save_dir+"/messages_analysis.npy",messages)
 
     core.close()
 
