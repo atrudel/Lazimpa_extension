@@ -845,9 +845,9 @@ class CompositionalitySenderReceiverRnnReinforce(nn.Module):
         message_lengths = find_lengths(message)
 
         # Noisy channel
-        noise_level=0.
-        noise_map=torch.from_numpy(1*(np.random.rand(message.size(0),message.size(1))<noise_level)).to(DEVICE)
-        noise=torch.from_numpy(np.random.randint(1,self.sender.vocab_size,size=(message.size(0),message.size(1)))).to(DEVICE) # random symbols
+        noise_level = 0.
+        noise_map = torch.from_numpy(1*(np.random.rand(message.size(0),message.size(1))<noise_level)).to(DEVICE)
+        noise = torch.from_numpy(np.random.randint(1,self.sender.vocab_size,size=(message.size(0),message.size(1)))).to(DEVICE) # random symbols
 
         message_noise=message*(1-noise_map) + noise_map* noise
 
@@ -1039,10 +1039,7 @@ class CompositionalitySenderImpatientReceiverRnnReinforce(nn.Module):
         if self.reg:
             sc/=message_lengths.size(0)
 
-            if sc>0.9 and sc<0.99:
-                self.length_cost=0.
-            if sc>0.99:
-                self.length_cost+=0.01
+            self.length_cost = (sc**45) / 10
             #if sc<0.9:
             #   self.length_cost=-0.1
             #self.length_cost= sc**(60) / 2
