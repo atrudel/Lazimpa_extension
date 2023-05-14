@@ -266,9 +266,13 @@ def dump_impatient(game, n_features, device, gs_mode,epoch):
     return acc_vec, messages
 
 def main(params):
-    print(torch.cuda.is_available())
+    print("Cuda available = ", torch.cuda.is_available())
     opts = get_params(params)
     print(opts, flush=True)
+    print("Sender cell: ", opts.sender_cell)
+    print("Receiver cell: ", opts.receiver_cell)
+    print("Reg (lazy) = ", opts.reg)
+    print("Impatient = ", opts.impatient)
     device = opts.device
 
     force_eos = opts.force_eos == 1
@@ -320,6 +324,7 @@ def main(params):
                                    opts.vocab_size, opts.sender_embedding, opts.sender_hidden,
                                    cell=opts.sender_cell, max_len=opts.max_len, num_layers=opts.sender_num_layers,
                                    force_eos=force_eos)
+
     if opts.receiver_cell == 'transformer':
         receiver = Receiver(n_features=opts.n_features, n_hidden=opts.receiver_embedding)
         receiver = core.TransformerReceiverDeterministic(receiver, opts.vocab_size, opts.max_len,
