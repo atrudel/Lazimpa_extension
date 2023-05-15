@@ -722,8 +722,7 @@ class SenderImpatientReceiverRnnReinforce(nn.Module):
         # If impatient 1
         receiver_output, log_prob_r, entropy_r = self.receiver(message, receiver_input, message_lengths)
 
-        """ NOISE VERSION
-
+        ### NOISY VERSION
         # Randomly takes a position
         rand_length=np.random.randint(0,message.size(1))
 
@@ -736,8 +735,8 @@ class SenderImpatientReceiverRnnReinforce(nn.Module):
         # the log prob of the choices made by S before and including the eos symbol - again, we don't
         # care about the rest
         effective_log_prob_s = torch.zeros_like(log_prob_r[:,rand_length])
-        """
 
+        '''
         #Loss
         loss, rest, crible_acc = self.loss(sender_input, message, message_lengths, receiver_input, receiver_output, labels)
 
@@ -747,7 +746,7 @@ class SenderImpatientReceiverRnnReinforce(nn.Module):
         # the log prob of the choices made by S before and including the eos symbol - again, we don't
         # care about the rest
         effective_log_prob_s = torch.zeros_like(log_prob_r.mean(1))
-
+        '''
         for i in range(message.size(1)):
             not_eosed = (i < message_lengths).float()
             effective_entropy_s += entropy_s[:, i] * not_eosed
