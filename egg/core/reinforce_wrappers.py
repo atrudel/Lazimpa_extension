@@ -628,7 +628,7 @@ class SenderReceiverRnnReinforce(nn.Module):
           sc=rest["acc"].sum()/rest["acc"].size(0)
 
           # Pour n_features=100
-          self.length_cost = 0.2
+          self.length_cost = 0.05
 
           #self.length_cost= sc**(45) / 10
           #if sc>0.99:
